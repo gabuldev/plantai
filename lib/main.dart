@@ -4,6 +4,7 @@ import 'package:plantai/scan/scan_page.dart';
 
 import 'home/home_page.dart';
 import 'scan/entities/plant.dart';
+import 'splash/splash_page.dart';
 
 void main() {
   runApp(const AppWidget());
@@ -20,8 +21,9 @@ class AppWidget extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: "/home",
+      initialRoute: "/splash",
       routes: {
+        "/splash": (context) => const SplashPage(),
         "/home": (context) => const HomePage(),
         "/scan": (context) => const ScanPage(),
         "/details": (context) => DetailsPage(

@@ -1,10 +1,12 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:plantai/historic/historic_page.dart';
 import 'package:plantai/scan/entities/plant.dart';
+import 'package:plantai/scan/scan_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../plants/plants_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,6 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int currentIndex = 0;
   List<Plant> myPlants = [];
   List<Plant> scannedPlants = [];
 
@@ -35,100 +38,59 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(
+        title: Image.asset("assets/images/logo_plantai.png"),
+        centerTitle: true,
+      ),
+      body: [
+        const PlantPage(),
+        const ScanPage(),
+        const HistoricPage(),
+      ][currentIndex],
+      bottomNavigationBar: Container(
+          height: 110,
+          color: const Color(0xFFEEEFE3),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const SizedBox(
-                height: 32,
-              ),
-              const Text(
-                "Últimas plantas escaneadas",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: scannedPlants.length,
-                  itemBuilder: (_, index) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 120,
-                      width: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: FileImage(
-                            File(scannedPlants[index].pathImage!),
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              const Text(
-                "Suas plantas",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              for (var item in myPlants)
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
+              for (var i = 0;
+                  i < [Icons.home, Icons.qr_code, Icons.nature].length;
+                  i++)
+                GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, "/details", arguments: item);
+                    setState(() {
+                      currentIndex = i;
+                    });
                   },
-                  title: Text(item.name),
-                  leading: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: FileImage(File(item.pathImage!)),
-                      ),
-                    ),
+                  child: MenuItem(
+                    icon: [Icons.home, Icons.qr_code, Icons.nature][i],
+                    isSelected: currentIndex == i,
                   ),
-                  trailing: const Icon(Icons.chevron_right),
                 ),
             ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: SizedBox(
-        height: 104,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "/scan");
-                },
-                icon: const Icon(Icons.qr_code)),
-            IconButton(onPressed: () {}, icon: const Icon(Icons.nature))
-          ],
-        ),
-      ),
+          )),
     );
+  }
+}
+
+class MenuItem extends StatelessWidget {
+  final bool isSelected;
+  final IconData icon;
+  const MenuItem({
+    super.key,
+    required this.icon,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: 64,
+        height: 32,
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xFFDDE6C6) : null,
+          borderRadius: BorderRadius.circular(99),
+        ),
+        child: Icon(icon, color: const Color(0xFF45483D)));
   }
 }

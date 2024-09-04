@@ -57,6 +57,7 @@ class ScanBottomSheet extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
+                Navigator.pop(context);
                 Navigator.pushNamed(
                   context,
                   '/details',
@@ -98,6 +99,7 @@ class ScanBottomSheet extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () async {
+                Navigator.pop(context);
                 final instance = await SharedPreferences.getInstance();
                 final plants = instance.getStringList("my_plants") ?? [];
                 plants.add(plant.toJson());

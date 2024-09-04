@@ -38,7 +38,36 @@ class _ScanPageState extends State<ScanPage> {
     );
   }
 
+  void openLoading() {
+    globalKey.currentState!.showBottomSheet(
+      (_) => BottomSheet(
+        onClosing: () {},
+        backgroundColor: const Color(0xFFF4F4E9),
+        builder: (_) => SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: const Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 40,
+              ),
+              CircularProgressIndicator(),
+              SizedBox(
+                height: 40,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void closeLoading() {
+    Navigator.pop(context);
+  }
+
   Future<void> searchPlant({required String imagePath}) async {
+    openLoading();
     final imageBytes = File(imagePath).readAsBytesSync();
 
     final generative =
@@ -91,6 +120,7 @@ Analise a imagem enviada.
     final plants = instance.getStringList("plants") ?? [];
     plants.add(plant.toJson());
     await instance.setStringList("plants", plants);
+    closeLoading();
     openBottomSheet(
       plant: plant,
     );
