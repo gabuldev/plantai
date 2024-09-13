@@ -1,6 +1,7 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,9 +67,8 @@ class _ScanPageState extends State<ScanPage> {
     Navigator.pop(context);
   }
 
-  Future<void> searchPlant({required String imagePath}) async {
+  Future<void> searchPlant({required Uint8List imageBytes}) async {
     openLoading();
-    final imageBytes = File(imagePath).readAsBytesSync();
 
     final generative =
         GenerativeModel(model: "gemini-1.5-pro", apiKey: ENV.geminiAPIKey);
@@ -115,7 +115,8 @@ Analise a imagem enviada.
       ])
     ]);
 
-    final plant = Plant.fromJson(response.text!).copyWith(pathImage: imagePath);
+    final plant =
+        Plant.fromJson(response.text!).copyWith(imageBytes: imageBytes);
     final instance = await SharedPreferences.getInstance();
     final plants = instance.getStringList("plants") ?? [];
     plants.add(plant.toJson());
@@ -137,7 +138,10 @@ Analise a imagem enviada.
                 body: AnimatedBuilder(
               animation: controller,
               builder: (context, child) => controller.cameraController != null
-                  ? CameraPreview(controller.cameraController!)
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: CameraPreview(controller.cameraController!))
                   : const SizedBox(),
             )),
             Align(
@@ -155,7 +159,7 @@ Analise a imagem enviada.
                 child: Column(
                   children: [
                     const SizedBox(
-                      height: 25,
+                      height: 8,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -164,15 +168,17 @@ Analise a imagem enviada.
                           final image = await ImagePicker()
                               .pickImage(source: ImageSource.gallery);
                           if (image != null) {
-                            searchPlant(imagePath: image.path);
+                            final bytes = await image.readAsBytes();
+                            searchPlant(imageBytes: bytes);
                           }
                         }),
                         TakePhotoButton(
                           onTap: () async {
                             final image = await controller.cameraController!
                                 .takePicture();
+                            final bytes = await image.readAsBytes();
 
-                            searchPlant(imagePath: image.path);
+                            searchPlant(imageBytes: bytes);
                           },
                         ),
                         ActionButton.changeCamera(
@@ -181,9 +187,6 @@ Analise a imagem enviada.
                           },
                         )
                       ],
-                    ),
-                    const SizedBox(
-                      height: 25,
                     ),
                   ],
                 ),

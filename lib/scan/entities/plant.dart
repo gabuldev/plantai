@@ -8,13 +8,13 @@ class Plant {
   final String cientificName;
   final String description;
   final List<Info> items;
-  final String? pathImage;
+  final Uint8List? imageBytes;
   Plant({
     required this.name,
     required this.cientificName,
     required this.description,
     required this.items,
-    required this.pathImage,
+    required this.imageBytes,
   });
 
   Plant copyWith({
@@ -22,14 +22,14 @@ class Plant {
     String? cientificName,
     String? description,
     List<Info>? items,
-    String? pathImage,
+    Uint8List? imageBytes,
   }) {
     return Plant(
       name: name ?? this.name,
       cientificName: cientificName ?? this.cientificName,
       description: description ?? this.description,
       items: items ?? this.items,
-      pathImage: pathImage ?? this.pathImage,
+      imageBytes: imageBytes ?? this.imageBytes,
     );
   }
 
@@ -39,7 +39,7 @@ class Plant {
       'cientificName': cientificName,
       'description': description,
       'items': items.map((x) => x.toMap()).toList(),
-      'pathImage': pathImage,
+      'imageBytes': base64Encode(imageBytes!),
     };
   }
 
@@ -53,7 +53,8 @@ class Plant {
           (x) => Info.fromMap(x as Map<String, dynamic>),
         ),
       ),
-      pathImage: map['pathImage'] != null ? map['pathImage'] as String : null,
+      imageBytes:
+          map['imageBytes'] != null ? base64Decode(map['imageBytes']) : null,
     );
   }
 
@@ -64,7 +65,7 @@ class Plant {
 
   @override
   String toString() {
-    return 'Plant(name: $name, cientificName: $cientificName, description: $description, items: $items, pathImage: $pathImage)';
+    return 'Plant(name: $name, cientificName: $cientificName, description: $description, items: $items, imageBytes: $imageBytes)';
   }
 
   @override
@@ -75,7 +76,7 @@ class Plant {
         other.cientificName == cientificName &&
         other.description == description &&
         listEquals(other.items, items) &&
-        other.pathImage == pathImage;
+        other.imageBytes == imageBytes;
   }
 
   @override
@@ -84,7 +85,7 @@ class Plant {
         cientificName.hashCode ^
         description.hashCode ^
         items.hashCode ^
-        pathImage.hashCode;
+        imageBytes.hashCode;
   }
 }
 

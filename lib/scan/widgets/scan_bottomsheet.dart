@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:plantai/scan/entities/plant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,8 +22,8 @@ class ScanBottomSheet extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.file(
-                File(plant.pathImage!),
+              child: Image.memory(
+                plant.imageBytes!,
                 height: 100,
                 width: double.maxFinite,
                 fit: BoxFit.cover,

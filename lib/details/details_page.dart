@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:plantai/scan/entities/plant.dart';
 
@@ -25,8 +23,8 @@ class DetailsPage extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.file(
-                  File(plant.pathImage!),
+                child: Image.memory(
+                  plant.imageBytes!,
                   height: 200,
                   width: double.maxFinite,
                   fit: BoxFit.cover,

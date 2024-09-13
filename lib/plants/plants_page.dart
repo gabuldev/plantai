@@ -1,7 +1,5 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,9 +71,8 @@ class _PlantPageState extends State<PlantPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: FileImage(
-                              File(scannedPlants[index].pathImage!),
-                            ),
+                            image:
+                                MemoryImage(scannedPlants[index].imageBytes!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -110,7 +107,7 @@ class _PlantPageState extends State<PlantPage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       image: DecorationImage(
-                        image: FileImage(File(item.pathImage!)),
+                        image: MemoryImage(item.imageBytes!),
                       ),
                     ),
                   ),

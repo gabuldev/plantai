@@ -27,9 +27,8 @@ class ScanController extends ChangeNotifier {
   Future<void> _startCameraController() async {
     cameraController?.dispose();
     cameraController = CameraController(
-      _cameras[_indexCamera],
-      ResolutionPreset.max,
-    );
+        _cameras[_indexCamera], ResolutionPreset.max,
+        enableAudio: false);
     await cameraController!.initialize();
     notifyListeners();
   }
